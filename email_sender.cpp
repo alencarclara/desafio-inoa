@@ -1,8 +1,12 @@
+// Baseado na documentação do libcurl
+
 #define WIN32_LEAN_AND_MEAN
 #include <stdio.h>
 #include <string>
 #include <curl/curl.h>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -46,27 +50,25 @@ static size_t read_cb(char *ptr, size_t size, size_t nmemb, void *userp)
     return len;
 }
 
-int sendEmail(const string &senderEmail, const string &recipientEmail, const string &senderPassword, const string &ticker, const string &smtpUrl, Alert alert)
+int sendEmail(const string &senderEmail, const string &recipientEmail, const string &senderPassword, const string &ticker, const string &smtpUrl, Alert alert, double precoAtual)
 {
+    stringstream streamPreco;
+    streamPreco << fixed << setprecision(2) << precoAtual;
+    string precoFormatado = streamPreco.str();
+
     string dataBuy =
         "To: " + recipientEmail + "\r\n"
-                                  "From: " +
-        senderEmail + "\r\n"
-                      "Subject: " +
-        "Alerta de COMPRA de " + ticker + "\r\n"
-                                          "\r\n"
-                                          "A cotacao de " +
-        ticker + " da B3 caiu e atingiu seu preco alvo de compra!\r\n";
+        "From: " + senderEmail + "\r\n"
+        "Subject: Alerta de COMPRA de " + ticker + "\r\n"
+        "\r\n"
+        "A cotacao de " + ticker + " da B3 caiu para R$ " + precoFormatado + " e atingiu seu preco alvo de compra!\r\n";
 
     string dataSell =
         "To: " + recipientEmail + "\r\n"
-                                  "From: " +
-        senderEmail + "\r\n"
-                      "Subject: " +
-        "Alerta de VENDA de " + ticker + "\r\n"
-                                         "\r\n"
-                                         "A cotacao de " +
-        ticker + " da B3 subiu e atingiu seu preco alvo de venda!\r\n";
+        "From: " + senderEmail + "\r\n"
+        "Subject: Alerta de VENDA de " + ticker + "\r\n"
+        "\r\n"
+        "A cotacao de " + ticker + " da B3 subiu para R$ " + precoFormatado + " e atingiu seu preco alvo de venda!\r\n";
 
     CURL *curl;
 
@@ -118,18 +120,14 @@ int sendEmail(const string &senderEmail, const string &recipientEmail, const str
         curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
-        /* Send the message */
         result = curl_easy_perform(curl);
 
-        /* Check for errors */
         if (result != CURLE_OK)
             fprintf(stderr, "curl_easy_perform() failed: %s\n",
                     curl_easy_strerror(result));
 
-        /* Free the list of recipients */
         curl_slist_free_all(recipients);
 
-        /* Always cleanup */
         curl_easy_cleanup(curl);
     }
 

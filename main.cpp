@@ -4,23 +4,21 @@
 #include <fstream>
 #include <vector>
 #include "include/nlohmann/json.hpp"
-#include "stock_fetcher.hpp"
+#include <optional>
 #include <thread>
 #include <chrono>
 
 using namespace std;
 
-// Avisa o compilador sobre as opções de alerta
 enum class Alert
 {
     Buy,
     Sell
 };
 
-// "Forward declaration": avisa o main que esta função existe noutro ficheiro
-int sendEmail(const std::string &senderEmail, const std::string &recipientEmail,
-              const std::string &senderPassword, const std::string &ticker,
-              Alert alert, const std::string &smtpUrl);
+optional<double> fetchStockPrice(const string &ticker);
+
+int sendEmail(const string &senderEmail, const string &recipientEmail, const string &senderPassword, const string &ticker, const string &smtpUrl, Alert alert, double precoAtual);
 
 int main(int argc, char *argv[])
 {
@@ -96,6 +94,8 @@ int main(int argc, char *argv[])
 
     cout << "Configuracoes carregadas! Iniciando monitoramento de " << ativo << "..." << endl;
 
+    string smtpUrl = "smtps://" + smtp + ":" + to_string(porta);
+
     while (true)
     {
         optional<double> preco_atual = fetchStockPrice(ativo);
@@ -107,10 +107,12 @@ int main(int argc, char *argv[])
             if (preco_atual.value() <= preco_compra)
             {
                 cout << "ALERTA: O preco caiu para R$" << preco_atual.value() << "! Hora de COMPRAR." << endl;
+                sendEmail(usuario, email, senha, ativo, smtpUrl, Alert::Buy, preco_atual.value());
             }
             else if (preco_atual.value() >= preco_venda)
             {
                 cout << "ALERTA: O preco subiu para R$" << preco_atual.value() << "! Hora de VENDER." << endl;
+                sendEmail(usuario, email, senha, ativo, smtpUrl, Alert::Sell, preco_atual.value());
             }
         }
 

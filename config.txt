@@ -1,5 +1,5 @@
-email=teste@gmail.com
+email_destino=email.do.investidor@gmail.com
 smtp_server=smtp.gmail.com
-smtp_port=587
-usuario=teste@gmail.com
-senha=xxxxxxx
+smtp_port=465
+usuario=o.seu.email.que.vai.enviar@gmail.com
+senha=suasenhadepassegeradano_google

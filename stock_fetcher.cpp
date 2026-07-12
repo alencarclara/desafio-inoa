@@ -1,7 +1,5 @@
-// arquivo sugerido por IA
-
 #define WIN32_LEAN_AND_MEAN
-#include "stock_fetcher.hpp"
+#include <optional>
 #include "include/nlohmann/json.hpp"
 #include <curl/curl.h>
 #include <iostream>
