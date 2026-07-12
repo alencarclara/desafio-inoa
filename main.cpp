@@ -10,6 +10,18 @@
 
 using namespace std;
 
+// Avisa o compilador sobre as opções de alerta
+enum class Alert
+{
+    Buy,
+    Sell
+};
+
+// "Forward declaration": avisa o main que esta função existe noutro ficheiro
+int sendEmail(const std::string &senderEmail, const std::string &recipientEmail,
+              const std::string &senderPassword, const std::string &ticker,
+              Alert alert, const std::string &smtpUrl);
+
 int main(int argc, char *argv[])
 {
     if (argc != 4)

@@ -1,3 +1,5 @@
+// arquivo sugerido por IA
+
 #pragma onde
 #include <string>
 #include <optional>
