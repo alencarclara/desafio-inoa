@@ -1,7 +1,12 @@
+#define NOMINMAX
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <vector>
+#include "include/nlohmann/json.hpp"
+#include "stock_fetcher.hpp"
+#include <thread>
+#include <chrono>
 
 using namespace std;
 
@@ -75,5 +80,29 @@ int main(int argc, char *argv[])
                 i++;
             }
         }
+    }
+
+    cout << "Configuracoes carregadas! Iniciando monitoramento de " << ativo << "..." << endl;
+
+    while (true)
+    {
+        optional<double> preco_atual = fetchStockPrice(ativo);
+
+        if (preco_atual.has_value())
+        {
+            cout << "Cotacao atual de " << ativo << ": R$ " << preco_atual.value() << endl;
+
+            if (preco_atual.value() <= preco_compra)
+            {
+                cout << "ALERTA: O preco caiu para R$" << preco_atual.value() << "! Hora de COMPRAR." << endl;
+            }
+            else if (preco_atual.value() >= preco_venda)
+            {
+                cout << "ALERTA: O preco subiu para R$" << preco_atual.value() << "! Hora de VENDER." << endl;
+            }
+        }
+
+        // espera 1 minuto para nao estourar o limite da API -> sugestão da IA
+        this_thread::sleep_for(chrono::minutes(1));
     }
 }

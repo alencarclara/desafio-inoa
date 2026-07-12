@@ -3,7 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "C:\\msys64\\mingw64\\include"
             ],
             "defines": [
                 "_DEBUG",
@@ -11,7 +13,7 @@
                 "_UNICODE"
             ],
             "intelliSenseMode": "windows-gcc-x64",
-            "compilerPath": "C:\\msys64\\ucrt64\\bin\\g++.exe"
+            "compilerPath": "C:\\msys64\\mingw64\\bin\\g++.exe"
         }
     ],
     "version": 4

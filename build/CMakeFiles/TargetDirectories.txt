@@ -1,0 +1,3 @@
+C:/Users/brown/OneDrive/Documentos/Inoa/build/CMakeFiles/stock-quote-alert.dir
+C:/Users/brown/OneDrive/Documentos/Inoa/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/brown/OneDrive/Documentos/Inoa/build/CMakeFiles/ZERO_CHECK.dir
